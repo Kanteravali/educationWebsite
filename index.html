@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mygurukul by Pulsecrafts - Online Training & Placement Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                   <!----- <span class="logo-icon">MG</span>-->
+                    <span class="logo-text"><img src="assets/logo.png" alt="My Gurukul Logo" > 
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#courses" class="nav-link">Courses</a></li>
+                    <li><a href="#program-structure" class="nav-link">Program Structure</a></li>
+                    <li><a href="#placement" class="nav-link">Placement Support</a></li>
+                    <li><a href="#-students" class="nav-link"> Students</a></li>
+                    <li><a href="#-counsellors" class="nav-link"> Counsellors</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="#enroll" class="btn btn-outline">Free Demo</a>
+                    <a href="#enroll" class="btn btn-primary">Enroll Now</a>
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Launch Your Tech Career with Expert Training</h1>
+                <p class="hero-subtitle">Industry-focused courses with guaranteed placement support for qualified candidates</p>
+                <div class="hero-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Live Online Classes</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-tasks"></i>
+                        <span>Assignments & Projects</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-certificate"></i>
+                        <span>Certification</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Placement Support</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#courses" class="btn btn-primary btn-large">
+                        <i class="fas fa-search"></i> Explore Courses
+                    </a>
+                    <a href="#enroll" class="btn btn-secondary btn-large">
+                        <i class="fas fa-calendar-alt"></i> Free Demo Session
+                    </a>
+                    <a href="#enroll" class="btn btn-accent btn-large">
+                        <i class="fas fa-user-plus"></i> Enroll Now
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80">
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Model Section -->
+    <section class="learning-model">
+        <div class="container">
+            <h2 class="section-title">Our Learning Model</h2>
+            <p class="section-subtitle">Structured path from learning to placement</p>
+            <div class="model-steps">
+                <div class="model-step">
+                    <div class="step-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span class="step-number">1</span>
+                    </div>
+                    <h3 class="step-title">Learn</h3>
+                    <p class="step-desc">Live interactive sessions with industry experts</p>
+                </div>
+                <div class="model-step">
+                    <div class="step-icon">
+                        <i class="fas fa-laptop-code"></i>
+                        <span class="step-number">2</span>
+                    </div>
+                    <h3 class="step-title">Build</h3>
+                    <p class="step-desc">Hands-on projects & real-world assignments</p>
+                </div>
+                <div class="model-step">
+                    <div class="step-icon">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="step-number">3</span>
+                    </div>
+                    <h3 class="step-title">Evaluate</h3>
+                    <p class="step-desc">Skill assessment & project evaluation</p>
+                </div>
+                <div class="model-step">
+                    <div class="step-icon">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="step-number">4</span>
+                    </div>
+                    <h3 class="step-title">Place</h3>
+                    <p class="step-desc">Placement assistance for qualified candidates</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="courses-section" id="courses">
+        <div class="container">
+            <h2 class="section-title">Our Career-Oriented Courses</h2>
+            <p class="section-subtitle">Choose from multiple technical and non-technical programs</p>
+            <div class="course-filters">
+                <button class="filter-btn active" data-filter="all">All Courses</button>
+                <button class="filter-btn" data-filter="technical">Technical</button>
+                <button class="filter-btn" data-filter="non-technical">Non-Technical</button>
+                <button class="filter-btn" data-filter="1-month">1 Month</button>
+                <button class="filter-btn" data-filter="3-month">3 Months</button>
+                <button class="filter-btn" data-filter="6-month">6 Months</button>
+            </div>
+            <div class="courses-grid" id="coursesGrid">
+                <!-- Courses will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Structure Section -->
+    <section class="program-structure" id="program-structure">
+        <div class="container">
+            <h2 class="section-title">Program Structure</h2>
+            <p class="section-subtitle">Common 6-month timeline for all courses</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 1</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Foundation</h3>
+                        <p class="timeline-desc">Build core fundamentals and basic concepts</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 2-3</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Core Skills</h3>
+                        <p class="timeline-desc">Develop essential skills and practical knowledge</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 4-5</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Advanced Skills</h3>
+                        <p class="timeline-desc">Master advanced topics and specialized areas</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-period">Month 6</div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">Evaluation + Placement Prep</h3>
+                        <p class="timeline-desc">Final assessment and job preparation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Placement Support Section -->
+    <section class="placement-section" id="placement">
+        <div class="container">
+            <h2 class="section-title">Placement & Career Support</h2>
+            <p class="section-subtitle">Our structured workflow to get you job-ready</p>
+            <div class="placement-workflow">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Course Completion</h3>
+                    <p class="step-desc">Successfully complete all modules and assignments</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Skill Test</h3>
+                    <p class="step-desc">Pass the technical skill assessment</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Project Evaluation</h3>
+                    <p class="step-desc">Submit and get your capstone project evaluated</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Shortlisting</h3>
+                    <p class="step-desc">Get shortlisted based on performance</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <h3 class="step-title">Placement Pool</h3>
+                    <p class="step-desc">Inclusion in our placement candidate pool</p>
+                </div>
+            </div>
+            <div class="placement-disclaimer">
+                <i class="fas fa-exclamation-circle"></i>
+                <p><strong>Disclaimer:</strong> Placement assistance is provided only to candidates who qualify our internal evaluation process.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Students Section -->
+    <section class="for-students" id="for-students">
+        <div class="container">
+            <h2 class="section-title">For Students</h2>
+            <div class="student-content">
+                <div class="student-info">
+                    <div class="info-card">
+                        <h3><i class="fas fa-graduation-cap"></i> Learning Process</h3>
+                        <p>Interactive live classes, recorded sessions, hands-on projects, and regular assessments.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-calendar-alt"></i> Demo Session</h3>
+                        <p>Attend a free demo session to experience our teaching methodology before enrollment.</p>
+                        <a href="#enroll" class="btn btn-small">Book Demo</a>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-users"></i> Referral Benefit</h3>
+                        <p>Refer 2 students and get a 10% discount on your course fee.</p>
+                        <a href="#contact" class="btn btn-small">Refer Now</a>
+                    </div>
+                </div>
+                <div class="communication-tools">
+                    <h3>Batch Communication Tools</h3>
+                    <div class="tools-grid">
+                        <div class="tool-item">
+                            <i class="fab fa-zoom"></i>
+                            <span>Zoom</span>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Google Classroom</span>
+                        </div>
+                        <div class="tool-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp Groups</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Counsellors Section -->
+    <section class="for-counsellors" id="for-counsellors">
+        <div class="container">
+            <h2 class="section-title">For Counsellors / Partners</h2>
+            <div class="counsellor-content">
+                <div class="counsellor-info">
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-tie"></i> Who Can Partner</h3>
+                        <p>Educational counsellors, trainers, institutes, and career guidance professionals.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-handshake"></i> How Partnership Works</h3>
+                        <p>Refer students to our courses and earn commission for every successful enrollment.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-money-bill-wave"></i> Commission Structure</h3>
+                        <p>Earn up to 15% commission per enrollment based on the course value.</p>
+                    </div>
+                </div>
+                <div class="counsellor-cta">
+                    <h3>Become an Enrollment Partner</h3>
+                    <p>Join our network of educational partners and grow your income while helping students build careers.</p>
+                    <a href="#enroll" class="btn btn-primary">Partner with Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <h2 class="section-title">About Pulsecrafts</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Pulsecrafts is a leading provider of career-oriented training programs designed to bridge the gap between academic learning and industry requirements.</p>
+                    <p>Our mission is to empower students and professionals with the skills needed to succeed in today's competitive job market through structured training and placement support.</p>
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Industry-Aligned Curriculum</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Experienced Trainers</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Hands-on Learning</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Placement Assistance</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <h3>500+</h3>
+                        <p>Students Trained</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>50+</h3>
+                        <p>Industry Partners</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>95%</h3>
+                        <p>Satisfaction Rate</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>12+</h3>
+                        <p>Courses Offered</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enrollment/Contact Section -->
+    <section class="enroll-section" id="enroll">
+        <div class="container">
+            <h2 class="section-title">Enroll / Enquiry</h2>
+            <p class="section-subtitle">Start your journey with a free demo session</p>
+            
+            <div class="enroll-container">
+                <div class="form-container">
+                    <div class="form-tabs">
+                        <button class="form-tab active" data-form="student">Student Enquiry</button>
+                        <button class="form-tab" data-form="counsellor">Counsellor Partnership</button>
+                        <button class="form-tab" data-form="demo">Demo Session</button>
+                    </div>
+                    
+                    <!-- Student Enquiry Form -->
+                    <form id="studentForm" class="enquiry-form active">
+                        <h3>Student Enquiry Form</h3>
+                        <div class="form-group">
+                            <label for="studentName">Full Name *</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentEmail">Email Address *</label>
+                            <input type="email" id="studentEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentPhone">Phone Number *</label>
+                            <input type="tel" id="studentPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentCourse">Course Interested In *</label>
+                            <select id="studentCourse" required>
+                                <option value="">Select a course</option>
+                                <option value="fullstack">Full Stack Development</option>
+                                <option value="data-science">Data Science & Analytics</option>
+                                <option value="digital-marketing">Digital Marketing</option>
+                                <option value="ui-ux">UI/UX Design</option>
+                                <option value="cybersecurity">Cybersecurity</option>
+                                <option value="business-analysis">Business Analysis</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentDuration">Preferred Duration *</label>
+                            <select id="studentDuration" required>
+                                <option value="">Select duration</option>
+                                <option value="1">1 Month (Foundation)</option>
+                                <option value="3">3 Months (Core)</option>
+                                <option value="6">6 Months (Complete Program)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentBackground">College / Experience</label>
+                            <textarea id="studentBackground" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Submit Enquiry</button>
+                    </form>
+                    
+                    <!-- Counsellor Partnership Form -->
+                    <form id="counsellorForm" class="enquiry-form">
+                        <h3>Counsellor Partnership Form</h3>
+                        <div class="form-group">
+                            <label for="counsellorName">Full Name *</label>
+                            <input type="text" id="counsellorName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="counsellorEmail">Email Address *</label>
+                            <input type="email" id="counsellorEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="counsellorPhone">Phone Number *</label>
+                            <input type="tel" id="counsellorPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="counsellorOrg">Organization / Institute</label>
+                            <input type="text" id="counsellorOrg">
+                        </div>
+                        <div class="form-group">
+                            <label for="counsellorExperience">Years of Experience</label>
+                            <select id="counsellorExperience">
+                                <option value="">Select experience</option>
+                                <option value="0-2">0-2 years</option>
+                                <option value="2-5">2-5 years</option>
+                                <option value="5+">5+ years</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="counsellorMessage">Additional Information</label>
+                            <textarea id="counsellorMessage" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Submit Partnership Request</button>
+                    </form>
+                    
+                    <!-- Demo Session Form -->
+                    <form id="demoForm" class="enquiry-form">
+                        <h3>Demo Session Registration</h3>
+                        <div class="form-group">
+                            <label for="demoName">Full Name *</label>
+                            <input type="text" id="demoName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="demoEmail">Email Address *</label>
+                            <input type="email" id="demoEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="demoPhone">Phone Number *</label>
+                            <input type="tel" id="demoPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="demoCourse">Course of Interest</label>
+                            <select id="demoCourse">
+                                <option value="">Select a course</option>
+                                <option value="fullstack">Full Stack Development</option>
+                                <option value="data-science">Data Science & Analytics</option>
+                                <option value="digital-marketing">Digital Marketing</option>
+                                <option value="ui-ux">UI/UX Design</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="demoDate">Preferred Date</label>
+                            <input type="date" id="demoDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="demoTime">Preferred Time</label>
+                            <select id="demoTime">
+                                <option value="">Select time slot</option>
+                                <option value="morning">Morning (9 AM - 12 PM)</option>
+                                <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+                                <option value="evening">Evening (4 PM - 8 PM)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Book Demo Session</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>enquiries@mygurukul.pulsecrafts.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+1 (234) 567-8900</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 9 AM - 6 PM</p>
+                            <p>Saturday: 10 AM - 4 PM</p>
+                        </div>
+                    </div>
+                    <div class="whatsapp-cta">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp Enquiries</h4>
+                            <p>Chat with us for quick responses</p>
+                            <a href="https://wa.me/12345678900" class="btn btn-whatsapp" target="_blank">
+                                <i class="fab fa-whatsapp"></i> Message on WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">MG</span>
+                        <span class="logo-text">Mygurukul <span class="logo-subtext">by Pulsecrafts</span></span>
+                    </a>
+                    <p>Online training & placement platform offering career-oriented courses with structured placement support.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#courses">Courses</a></li>
+                        <li><a href="#program-structure">Program Structure</a></li>
+                        <li><a href="#placement">Placement Support</a></li>
+                        <li><a href="#for-students"> Students</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Important Pages</h3>
+                    <ul>
+                        <li><a href="#for-counsellors">For Counsellors</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#enroll">Enroll Now</a></li>
+                        <li><a href="#enroll">Free Demo</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Tech Park, Innovation Street, Bangalore, India</p>
+                        <p><i class="fas fa-phone"></i> +1 (234) 567-8900</p>
+                        <p><i class="fas fa-envelope"></i> support@mygurukul.pulsecrafts.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Mygurukul by Pulsecrafts. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for Course Details -->
+    <div class="modal" id="courseModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <h2 id="modalCourseTitle">Course Title</h2>
+                <div class="modal-course-meta">
+                    <span class="duration-badge" id="modalDuration">6 Months</span>
+                    <span class="mode-badge" id="modalMode">Live Online</span>
+                    <span class="category-badge" id="modalCategory">Technical</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3><i class="fas fa-info-circle"></i> Course Overview</h3>
+                    <p id="modalOverview">Course overview details will appear here.</p>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Duration Structure</h3>
+                    <div class="duration-structure">
+                        <div class="duration-option">
+                            <h4>1 Month - Foundation</h4>
+                            <p>Basic concepts and fundamentals</p>
+                        </div>
+                        <div class="duration-option">
+                            <h4>3 Months - Core</h4>
+                            <p>Essential skills and practical knowledge</p>
+                        </div>
+                        <div class="duration-option">
+                            <h4>6 Months - Complete Program</h4>
+                            <p>Full curriculum with placement preparation</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-book"></i> Curriculum</h3>
+                    <div id="modalCurriculum">
+                        Curriculum details will be loaded here
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-project-diagram"></i> Projects & Outcomes</h3>
+                    <ul id="modalProjects">
+                        <li>Project details will appear here</li>
+                    </ul>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-certificate"></i> Certification</h3>
+                    <p id="modalCertification">Certification details will appear here.</p>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-briefcase"></i> Placement Eligibility</h3>
+                    <p id="modalPlacement">Placement eligibility criteria will appear here.</p>
+                    <div class="placement-note">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Placement is conditional based on internal evaluation and performance.</p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <a href="#enroll" class="btn btn-primary">Enroll Now</a>
+                    <button class="btn btn-outline" id="closeModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message Toast -->
+    <div class="toast" id="successToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Your enquiry has been submitted successfully!</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
