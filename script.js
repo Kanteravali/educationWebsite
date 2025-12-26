@@ -113,14 +113,13 @@ const modalClose = document.getElementById('modalClose');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const successToast = document.getElementById('successToast');
 const toastMessage = document.getElementById('toastMessage');
-const backToTopBtn = document.createElement('button');
 
-// Initialize the page
+// Mobile Menu Toggle - SIMPLIFIED FIX
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize courses
     renderCourses(courses);
     
-    // Initialize event listeners
+    // Initialize all event listeners
     initEventListeners();
     
     // Create back to top button
@@ -128,39 +127,85 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set current year in footer
     document.querySelector('.footer-bottom p').textContent = `© ${new Date().getFullYear()} Mygurukul by Pulsecrafts. All rights reserved.`;
-    
-    // Add animation to elements on scroll
-    initScrollAnimations();
 });
+
+// Mobile Menu Functions
+function toggleMobileMenu() {
+    navMenu.classList.toggle('active');
+    
+    // Toggle between hamburger and close icon
+    const icon = menuToggle.querySelector('i');
+    if (navMenu.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+    } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+    }
+}
+
+function closeMobileMenu() {
+    navMenu.classList.remove('active');
+    const icon = menuToggle.querySelector('i');
+    icon.classList.remove('fa-times');
+    icon.classList.add('fa-bars');
+    document.body.style.overflow = 'auto';
+}
 
 // Initialize all event listeners
 function initEventListeners() {
-    // Mobile menu toggle
-    menuToggle.addEventListener('click', toggleMobileMenu);
+    // Mobile menu toggle - simplified
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMobileMenu);
+    }
     
     // Close mobile menu when clicking a link
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
+        link.addEventListener('click', function() {
+            closeMobileMenu();
+            
+            // Update active link
+            document.querySelectorAll('.nav-link').forEach(item => {
+                item.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
     });
     
     // Course filter buttons
-    filterButtons.forEach(button => {
-        button.addEventListener('click', filterCourses);
-    });
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', filterCourses);
+        });
+    }
     
     // Form tabs
-    formTabs.forEach(tab => {
-        tab.addEventListener('click', switchFormTab);
-    });
+    if (formTabs.length > 0) {
+        formTabs.forEach(tab => {
+            tab.addEventListener('click', switchFormTab);
+        });
+    }
     
     // Form submissions
-    studentForm.addEventListener('submit', handleFormSubmit);
-    counsellorForm.addEventListener('submit', handleFormSubmit);
-    demoForm.addEventListener('submit', handleFormSubmit);
+    if (studentForm) {
+        studentForm.addEventListener('submit', handleFormSubmit);
+    }
+    if (counsellorForm) {
+        counsellorForm.addEventListener('submit', handleFormSubmit);
+    }
+    if (demoForm) {
+        demoForm.addEventListener('submit', handleFormSubmit);
+    }
     
     // Modal close buttons
-    modalClose.addEventListener('click', closeModal);
-    closeModalBtn.addEventListener('click', closeModal);
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
     
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
@@ -193,18 +238,26 @@ function initEventListeners() {
         });
     });
     
-    // Active nav link on scroll
-    window.addEventListener('scroll', highlightNavOnScroll);
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navMenu.contains(e.target) && 
+            !menuToggle.contains(e.target) && 
+            navMenu.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
     
-    // Back to top button
-    window.addEventListener('scroll', toggleBackToTop);
-    
-    // Form input animations
-    initFormAnimations();
+    // Close mobile menu on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
 }
 
-// Create back to top button
+// Rest of your functions remain the same...
 function createBackToTopButton() {
+    const backToTopBtn = document.createElement('button');
     backToTopBtn.className = 'back-to-top';
     backToTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
     backToTopBtn.setAttribute('aria-label', 'Back to top');
@@ -215,33 +268,20 @@ function createBackToTopButton() {
         });
     });
     document.body.appendChild(backToTopBtn);
+    
+    // Toggle back to top button visibility
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    });
 }
 
-// Toggle back to top button visibility
-function toggleBackToTop() {
-    if (window.scrollY > 300) {
-        backToTopBtn.classList.add('visible');
-    } else {
-        backToTopBtn.classList.remove('visible');
-    }
-}
-
-// Toggle mobile menu
-function toggleMobileMenu() {
-    navMenu.classList.toggle('active');
-    menuToggle.innerHTML = navMenu.classList.contains('active') 
-        ? '<i class="fas fa-times"></i>' 
-        : '<i class="fas fa-bars"></i>';
-}
-
-// Close mobile menu
-function closeMobileMenu() {
-    navMenu.classList.remove('active');
-    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-}
-
-// Render courses to the grid
 function renderCourses(coursesToRender) {
+    if (!coursesGrid) return;
+    
     coursesGrid.innerHTML = '';
     
     coursesToRender.forEach(course => {
@@ -318,7 +358,6 @@ function renderCourses(coursesToRender) {
     });
 }
 
-// Filter courses based on selected filter
 function filterCourses() {
     // Remove active class from all filter buttons
     filterButtons.forEach(btn => btn.classList.remove('active'));
@@ -348,16 +387,13 @@ function filterCourses() {
             (filter === 'non-technical' && category === 'non-technical')) {
             card.style.display = 'block';
             visibleCount++;
-            
-            // Add animation
-            card.style.animation = 'fadeInUp 0.5s ease-out';
         } else {
             card.style.display = 'none';
         }
     });
     
     // If no courses match the filter, show a message
-    if (visibleCount === 0) {
+    if (visibleCount === 0 && coursesGrid) {
         const noResults = document.createElement('div');
         noResults.className = 'no-results';
         noResults.innerHTML = `
@@ -371,7 +407,6 @@ function filterCourses() {
     }
 }
 
-// Switch between form tabs
 function switchFormTab() {
     const formType = this.getAttribute('data-form');
     
@@ -384,47 +419,21 @@ function switchFormTab() {
     document.getElementById(`${formType}Form`).classList.add('active');
 }
 
-// Handle form submissions
 function handleFormSubmit(e) {
     e.preventDefault();
     
     let message = '';
-    let formData = {};
     
     if (this.id === 'studentForm') {
         message = 'Your student enquiry has been submitted successfully! We will contact you within 24 hours.';
-        formData = {
-            name: document.getElementById('studentName').value,
-            email: document.getElementById('studentEmail').value,
-            phone: document.getElementById('studentPhone').value,
-            course: document.getElementById('studentCourse').value,
-            duration: document.getElementById('studentDuration').value,
-            background: document.getElementById('studentBackground').value
-        };
     } else if (this.id === 'counsellorForm') {
         message = 'Your partnership request has been submitted! Our team will reach out to discuss opportunities.';
-        formData = {
-            name: document.getElementById('counsellorName').value,
-            email: document.getElementById('counsellorEmail').value,
-            phone: document.getElementById('counsellorPhone').value,
-            organization: document.getElementById('counsellorOrg').value,
-            experience: document.getElementById('counsellorExperience').value,
-            message: document.getElementById('counsellorMessage').value
-        };
     } else if (this.id === 'demoForm') {
         message = 'Demo session booked successfully! You will receive confirmation details via email.';
-        formData = {
-            name: document.getElementById('demoName').value,
-            email: document.getElementById('demoEmail').value,
-            phone: document.getElementById('demoPhone').value,
-            course: document.getElementById('demoCourse').value,
-            date: document.getElementById('demoDate').value,
-            time: document.getElementById('demoTime').value
-        };
     }
     
     // In a real application, you would send formData to a server here
-    console.log('Form submitted:', formData);
+    console.log('Form submitted');
     
     // Show success toast
     showToast(message);
@@ -433,7 +442,6 @@ function handleFormSubmit(e) {
     this.reset();
 }
 
-// Open course modal with details
 function openCourseModal(courseId) {
     const course = courses.find(c => c.id === courseId);
     
@@ -452,13 +460,15 @@ function openCourseModal(courseId) {
     projectsList.innerHTML = '';
     course.projects.forEach(project => {
         const li = document.createElement('li');
-        li.textContent = project;
+        li.innerHTML = `<i class="fas fa-check"></i> ${project}`;
         li.style.padding = '10px 0';
         li.style.borderBottom = '1px solid var(--light-gray)';
         li.style.listStyle = 'none';
         li.style.paddingLeft = '25px';
         li.style.position = 'relative';
-        li.innerHTML = `<i class="fas fa-check" style="position: absolute; left: 0; color: var(--accent);"></i> ${project}`;
+        li.querySelector('i').style.position = 'absolute';
+        li.querySelector('i').style.left = '0';
+        li.querySelector('i').style.color = 'var(--accent)';
         projectsList.appendChild(li);
     });
     
@@ -470,14 +480,14 @@ function openCourseModal(courseId) {
     document.body.style.overflow = 'hidden';
 }
 
-// Close course modal
 function closeModal() {
     courseModal.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
-// Show toast notification
 function showToast(message) {
+    if (!toastMessage || !successToast) return;
+    
     toastMessage.textContent = message;
     successToast.classList.add('active');
     
@@ -486,104 +496,3 @@ function showToast(message) {
         successToast.classList.remove('active');
     }, 5000);
 }
-
-// Highlight active nav link on scroll
-function highlightNavOnScroll() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 120;
-        const sectionHeight = section.clientHeight;
-        
-        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-}
-
-// Initialize form animations
-function initFormAnimations() {
-    const formInputs = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
-    
-    formInputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.parentElement.classList.add('focused');
-        });
-        
-        input.addEventListener('blur', function() {
-            if (!this.value) {
-                this.parentElement.classList.remove('focused');
-            }
-        });
-    });
-}
-
-// Initialize scroll animations
-function initScrollAnimations() {
-    const animatedElements = document.querySelectorAll('.model-step, .course-card, .timeline-item, .workflow-step, .info-card, .stat-item');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-    
-    animatedElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-}
-
-// Add active class to nav links when clicked
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function() {
-        document.querySelectorAll('.nav-link').forEach(item => {
-            item.classList.remove('active');
-        });
-        this.classList.add('active');
-    });
-});
-
-// Mobile menu toggle for touch devices
-document.addEventListener("DOMContentLoaded", () => {
-    const menuToggle = document.getElementById("menuToggle");
-    const navMenu = document.querySelector(".nav-menu");
-
-    menuToggle.addEventListener("click", () => {
-        navMenu.classList.toggle("active");
-        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : 'auto';
-    });
-});
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!navMenu.contains(e.target) && !menuToggle.contains(e.target) && navMenu.classList.contains('active')) {
-        closeMobileMenu();
-    }
-});
-
-// Add keyboard navigation support
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeModal();
-        closeMobileMenu();
-    }
-});
