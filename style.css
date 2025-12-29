@@ -100,9 +100,17 @@ html {
 }
 
 .logo-img {
-    height: 45px;
+    height: 95px;
     width: auto;
     transition: all 0.3s ease;
+    object-fit: contain;
+}
+
+/* Footer logo specific styling */
+.footer-logo {
+    height: 50px;
+    margin-bottom: 1rem;
+    filter: brightness(0) invert(1);
 }
 
 .nav-menu {
@@ -276,7 +284,7 @@ html {
     box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
 }
 
-/* Hero Section - UPDATED */
+/* Hero Section */
 .hero {
     padding: 160px 0 100px;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.3) 100%),
@@ -328,7 +336,7 @@ html {
     animation: fadeInUp 0.8s ease 0.4s both;
 }
 
-/* Highlights Section - UPDATED */
+/* Highlights Section */
 .highlights {
     padding: 100px 0;
     position: relative;
@@ -376,7 +384,7 @@ html {
     margin: 1.5rem auto 0;
 }
 
-/* UPDATED: All 4 cards in same row */
+/* All 4 cards in same row */
 .highlight-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1659,6 +1667,293 @@ html {
     font-size: 1.5rem;
 }
 
+/* Payment System Styles */
+
+/* Payment Form */
+.payment-info {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.payment-summary {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.payment-summary h4 {
+    margin-bottom: 1.25rem;
+    color: var(--text-color);
+    font-size: 1.25rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.summary-item.total {
+    border-top: 2px solid var(--primary-color);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    font-size: 1.25rem;
+}
+
+.summary-item.total strong {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.discount {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.payment-method:hover {
+    border-color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.payment-method input[type="radio"]:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.installment-plan {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+    border: 1px solid var(--primary-light);
+}
+
+.installment-plan h4 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.installment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.installment-item:last-child {
+    margin-bottom: 0;
+}
+
+.coupon-input {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.coupon-input input {
+    flex: 1;
+}
+
+.coupon-message {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    min-height: 1.25rem;
+}
+
+.coupon-message.success {
+    color: var(--success-color);
+}
+
+.coupon-message.error {
+    color: var(--danger-color);
+}
+
+.terms-agreement {
+    margin-top: 1.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-top: 0.25rem;
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+.payment-security {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    color: var(--light-text);
+    font-size: 0.875rem;
+}
+
+.payment-security i {
+    color: var(--success-color);
+}
+
+.payment-methods-info {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.payment-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 2rem;
+    color: var(--light-text);
+    flex-wrap: wrap;
+}
+
+.payment-icons i {
+    transition: all 0.3s ease;
+}
+
+.payment-icons i:hover {
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+/* Payment Modal */
+#paymentModal .modal-content {
+    max-width: 500px;
+}
+
+.payment-loading {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.payment-loading i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.payment-success {
+    text-align: center;
+    padding: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--success-color);
+    margin-bottom: 1.5rem;
+}
+
+.success-icon i {
+    animation: scaleUp 0.5s ease;
+}
+
+.payment-details {
+    background: var(--light-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.payment-details p {
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment-details p:last-child {
+    margin-bottom: 0;
+}
+
+.payment-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.payment-actions .btn {
+    flex: 1;
+}
+
+/* Payment Status */
+.payment-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+.payment-status.success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: var(--accent-color);
+    border: 1px solid #10b981;
+}
+
+.payment-status.pending {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: var(--warning-color);
+    border: 1px solid #f59e0b;
+}
+
+.payment-status.failed {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: var(--danger-color);
+    border: 1px solid #ef4444;
+}
+
 /* Certificate Styles */
 .modal-certificate-container {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -1765,6 +2060,20 @@ html {
     }
 }
 
+@keyframes scaleUp {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 @keyframes float {
     0%, 100% {
         transform: translateY(0);
@@ -1780,6 +2089,27 @@ html {
     }
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes sealGlow {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 130,246, 0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
     }
 }
 
@@ -1828,21 +2158,134 @@ html {
     box-shadow: var(--shadow-lg);
 }
 
-/* Special Offer Timer */
-.special-offer-timer {
-    margin-top: 20px;
-    animation: fadeInUp 0.8s ease 0.6s both;
+/* Special Offer Badge */
+.special-offer-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    animation: pulse 2s infinite;
 }
 
-.timer-countdown {
-    font-family: monospace;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: bold;
+/* Certificate seal animation */
+.certificate-seal {
+    animation: sealGlow 2s infinite;
 }
 
-/* Responsive Design for Highlight Cards */
+/* Course name input */
+.certificate-name-input {
+    transition: all 0.3s ease;
+}
+
+.certificate-name-input:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Form Errors */
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+    border-color: var(--danger-color);
+}
+
+.form-group.error label {
+    color: var(--danger-color);
+}
+
+/* Payment Receipt */
+.receipt-preview {
+    background: white;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin: 1.5rem 0;
+}
+
+.receipt-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1.5rem;
+}
+
+.receipt-body {
+    margin-bottom: 2rem;
+}
+
+.receipt-footer {
+    border-top: 2px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.receipt-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+/* Installment Schedule */
+.installment-schedule {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.installment-header {
+    background: var(--primary-light);
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.installment-row {
+    display: flex;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+}
+
+.installment-row:last-child {
+    border-bottom: none;
+}
+
+.installment-date {
+    flex: 1;
+}
+
+.installment-amount {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.installment-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.installment-status.paid {
+    background: var(--success-color);
+    color: white;
+}
+
+.installment-status.pending {
+    background: var(--warning-color);
+    color: white;
+}
+
+/* Responsive Design for Payment */
 @media (max-width: 1200px) {
     .container {
         max-width: 100%;
@@ -1981,6 +2424,15 @@ html {
         grid-template-columns: repeat(2, 1fr);
     }
     
+    .payment-methods {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .payment-actions {
+        flex-direction: column;
+    }
+    
     .certificate-actions {
         flex-direction: column;
     }
@@ -1997,6 +2449,24 @@ html {
         width: 100%;
         max-width: 300px;
         margin: 0 auto;
+    }
+    
+    .installment-plan {
+        padding: 1rem;
+    }
+    
+    .installment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .payment-methods-info {
+        text-align: center;
+    }
+    
+    .payment-icons {
+        justify-content: center;
     }
 }
 
@@ -2046,6 +2516,24 @@ html {
     .footer-links {
         justify-content: center;
     }
+    
+    .payment-info {
+        padding: 1rem;
+    }
+    
+    .payment-summary {
+        padding: 1rem;
+    }
+    
+    .receipt-preview {
+        padding: 1rem;
+    }
+    
+    .installment-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2085,4 +2573,33 @@ html {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Additional Styles for Animations */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animate-on-scroll.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-group.focused label {
+    color: var(--primary-color);
+    transform: translateY(-5px);
+    font-weight: 600;
+}
+
+.course-actions {
+    transition: all 0.3s ease;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
 }

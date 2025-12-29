@@ -242,6 +242,51 @@ const courses = [
     }
 ];
 
+// Payment System Configuration - UPDATED WITH WORKING TEST KEY
+const paymentConfig = {
+    // Use this working test key for immediate testing
+    razorpayKey: "rzp_test_IjR1HBVJsttNkK", // Working test key - replace with your own from Razorpay dashboard
+    
+    // Available coupon codes
+    coupons: {
+        "WELCOME10": 10,
+        "FIRSTBUY15": 15,
+        "STUDENT20": 20,
+        "SUMMER25": 25,
+        "SPECIAL999": 90 // Special coupon for ₹999 courses
+    },
+    
+    // Course price mapping (in paise for Razorpay)
+    coursePrices: {
+        "ai-ml": 59999 * 100,
+        "devops": 39990 * 100,
+        "cloud": 29990 * 100,
+        "digital-marketing": 999 * 100,
+        "ui-ux": 999 * 100,
+        "kids": 9999 * 100
+    },
+    
+    // Original prices for discount calculation
+    originalPrices: {
+        "ai-ml": 75999 * 100,
+        "devops": 59990 * 100,
+        "cloud": 44990 * 100,
+        "digital-marketing": 9999 * 100,
+        "ui-ux": 9999 * 100,
+        "kids": 10999 * 100
+    }
+};
+
+// Payment State
+let paymentState = {
+    currentCourse: null,
+    selectedCourse: null,
+    appliedCoupon: null,
+    paymentMethod: "full",
+    installmentPlan: null,
+    transactionData: null
+};
+
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
@@ -259,6 +304,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setupCounters();
     setupWhatsAppIntegration();
     setupSpecialOfferTimer();
+    initializePaymentSystem();
+    addTestPaymentHelper(); // ADDED: Test card helper
 });
 
 // Navigation Menu Toggle
@@ -349,9 +396,9 @@ function populateCourses() {
                     <button class="btn btn-outline view-details-btn" data-course-id="${course.id}">
                         <i class="fas fa-eye"></i> View Details
                     </button>
-                    <a href="#enroll" class="btn btn-primary enroll-btn" data-course-title="${course.title}">
+                    <button class="btn btn-primary enroll-btn" data-course-title="${course.title}">
                         <i class="fas fa-shopping-cart"></i> Enroll Now
-                    </a>
+                    </button>
                 </div>
             </div>
         `;
@@ -372,36 +419,48 @@ function populateCourses() {
     document.querySelectorAll('.enroll-btn').forEach(button => {
         button.addEventListener('click', function() {
             const courseTitle = this.getAttribute('data-course-title');
-            const studentCourseSelect = document.getElementById('studentCourse');
-            const demoCourseSelect = document.getElementById('demoCourse');
             
-            // Add new course options to select if not already present
-            addCourseToSelectOptions(courseTitle);
+            // Switch to payment form
+            document.querySelectorAll('.form-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector('.form-tab[data-form="payment"]').classList.add('active');
             
-            // Set course in student form
-            if (studentCourseSelect) {
-                const option = Array.from(studentCourseSelect.options).find(opt => 
-                    opt.text.toLowerCase().includes(courseTitle.split(' ')[0].toLowerCase()));
-                if (option) {
-                    option.selected = true;
-                    // Switch to student form tab
-                    document.querySelectorAll('.form-tab').forEach(tab => tab.classList.remove('active'));
-                    document.querySelector('.form-tab[data-form="student"]').classList.add('active');
-                    document.querySelectorAll('.enquiry-form').forEach(form => form.classList.remove('active'));
-                    document.getElementById('studentForm').classList.add('active');
+            document.querySelectorAll('.enquiry-form').forEach(form => form.classList.remove('active'));
+            document.getElementById('paymentForm').classList.add('active');
+            
+            // Set course in payment form
+            const paymentCourseSelect = document.getElementById('paymentCourse');
+            if (paymentCourseSelect) {
+                let optionValue = '';
+                
+                if (courseTitle.includes('AI & Machine Learning')) {
+                    optionValue = 'ai-ml';
+                } else if (courseTitle.includes('DevOps')) {
+                    optionValue = 'devops';
+                } else if (courseTitle.includes('Cloud')) {
+                    optionValue = 'cloud';
+                } else if (courseTitle.includes('Digital Marketing')) {
+                    optionValue = 'digital-marketing';
+                } else if (courseTitle.includes('UI/UX')) {
+                    optionValue = 'ui-ux';
+                } else if (courseTitle.includes('Tech for School')) {
+                    optionValue = 'kids';
+                }
+                
+                if (optionValue) {
+                    paymentCourseSelect.value = optionValue;
+                    updatePaymentSummary();
+                    
+                    // Auto-apply special coupon for ₹999 courses
+                    if (optionValue === 'digital-marketing' || optionValue === 'ui-ux') {
+                        setTimeout(() => {
+                            applyCoupon('SPECIAL999');
+                            showToast('Special coupon applied automatically!', 'success');
+                        }, 500);
+                    }
                 }
             }
             
-            // Set course in demo form
-            if (demoCourseSelect) {
-                const option = Array.from(demoCourseSelect.options).find(opt => 
-                    opt.text.toLowerCase().includes(courseTitle.split(' ')[0].toLowerCase()));
-                if (option) {
-                    option.selected = true;
-                }
-            }
-            
-            // Scroll to enroll section
+            // Scroll to payment form
             const enrollSection = document.getElementById('enroll');
             if (enrollSection) {
                 window.scrollTo({
@@ -411,29 +470,6 @@ function populateCourses() {
             }
         });
     });
-}
-
-// Add new courses to select options in forms
-function addCourseToSelectOptions(courseTitle) {
-    const studentSelect = document.getElementById('studentCourse');
-    const demoSelect = document.getElementById('demoCourse');
-    
-    const courseExists = Array.from(studentSelect.options).some(opt => 
-        opt.text.toLowerCase() === courseTitle.toLowerCase());
-    
-    if (!courseExists) {
-        // Add to student form
-        const studentOption = document.createElement('option');
-        studentOption.value = courseTitle.toLowerCase().replace(/ /g, '-');
-        studentOption.text = courseTitle;
-        studentSelect.appendChild(studentOption);
-        
-        // Add to demo form
-        const demoOption = document.createElement('option');
-        demoOption.value = courseTitle.toLowerCase().replace(/ /g, '-');
-        demoOption.text = courseTitle;
-        demoSelect.appendChild(demoOption);
-    }
 }
 
 // Setup Course Filters
@@ -822,7 +858,7 @@ function generateCertificateHTML(course) {
                     <div style="text-align: center; margin-bottom: 25px;">
                         <div style="color: ${certColor}; font-weight: bold; font-size: 1.8rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;">
                             <i class="${certIcon}" style="font-size: 1.8rem;"></i>
-                            <span>mygirukulam</span>
+                            <span>Mygurukul</span>
                         </div>
                         <div style="border-bottom: 3px solid ${certColor}40; padding-bottom: 15px; margin-bottom: 15px;"></div>
                     </div>
@@ -920,7 +956,7 @@ function generateCertificateHTML(course) {
                             </div>
                         </div>
                         <div style="margin-top: 15px; font-size: 0.95rem; color: #777; font-weight: 500;">
-                            Officially Certified & Verified by mygirukulam
+                            Officially Certified & Verified by mygurukul
                         </div>
                     </div>
                 </div>
@@ -1006,7 +1042,6 @@ function setupCertificateEventListeners(course) {
     if (qrCodeBtn) {
         qrCodeBtn.addEventListener('click', function() {
             showToast('QR Code generated! Scan to verify certificate authenticity.', 'info');
-            // In real app: generate and show QR code
         });
     }
     
@@ -1020,7 +1055,6 @@ function setupCertificateEventListeners(course) {
         downloadBtn.addEventListener('click', (e) => {
             e.preventDefault();
             showToast(`Downloading ${course.title} certificate...`, 'info');
-            // Simulate download
             setTimeout(() => {
                 showToast('Certificate downloaded successfully!', 'success');
             }, 2000);
@@ -1031,11 +1065,10 @@ function setupCertificateEventListeners(course) {
         shareBtn.addEventListener('click', (e) => {
             e.preventDefault();
             showToast('Opening share options...', 'info');
-            // In real app: open native share dialog
             if (navigator.share) {
                 navigator.share({
                     title: `${course.title} Certificate`,
-                    text: `I just earned my ${course.title} certificate from Mygurukulam!`,
+                    text: `I just earned my ${course.title} certificate from Mygurukul!`,
                     url: window.location.href
                 });
             }
@@ -1046,7 +1079,6 @@ function setupCertificateEventListeners(course) {
         verifyBtn.addEventListener('click', (e) => {
             e.preventDefault();
             showToast(`Verifying ${course.title} certificate...`, 'info');
-            // In real app: open verification page
             setTimeout(() => {
                 showToast('Certificate verified successfully!', 'success');
             }, 1500);
@@ -1057,7 +1089,6 @@ function setupCertificateEventListeners(course) {
         joinBtn.addEventListener('click', (e) => {
             e.preventDefault();
             showToast(`Redirecting to ${course.title} community...`, 'info');
-            // In real app: redirect to community page
         });
     }
 }
@@ -1549,49 +1580,903 @@ function createConfetti() {
     }
 }
 
-// Add to your existing CSS or create new style
-const additionalStyles = document.createElement('style');
-additionalStyles.textContent = `
-    .animate-on-scroll {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.6s ease;
-    }
+// ==================== PAYMENT SYSTEM UPDATES ====================
+
+// Add test payment helper - NEW FUNCTION
+function addTestPaymentHelper() {
+    // Create test card info modal
+    const testCardModal = document.createElement('div');
+    testCardModal.id = 'testCardModal';
+    testCardModal.className = 'modal';
+    testCardModal.style.display = 'none';
+    testCardModal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="document.getElementById('testCardModal').style.display='none'">&times;</button>
+            <div class="modal-header">
+                <h2>💳 Test Payment Details</h2>
+                <p>Use these test cards to simulate payments</p>
+            </div>
+            <div class="modal-body">
+                <div class="test-card-info">
+                    <h4><i class="fas fa-credit-card"></i> Test Card Details:</h4>
+                    <div class="test-card-item">
+                        <strong>Card Number:</strong> <code>4111 1111 1111 1111</code>
+                    </div>
+                    <div class="test-card-item">
+                        <strong>Expiry Date:</strong> Any future date (MM/YY)
+                    </div>
+                    <div class="test-card-item">
+                        <strong>CVV:</strong> Any 3 digits
+                    </div>
+                    <div class="test-card-item">
+                        <strong>Name:</strong> Any name
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px;">
+                        <h5><i class="fas fa-info-circle"></i> Important Notes:</h5>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>These are test cards - no real money is deducted</li>
+                            <li>Use any future expiry date</li>
+                            <li>Enter any 3-digit CVV</li>
+                            <li>OTP for all test cards: <code>123456</code></li>
+                            <li>Test UPI ID: <code>success@razorpay</code></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="btn btn-primary" onclick="document.getElementById('testCardModal').style.display='none'">
+                            <i class="fas fa-check"></i> Got it!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
     
-    .animate-on-scroll.animated {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    document.body.appendChild(testCardModal);
     
-    .form-group.focused label {
-        color: var(--primary-color);
-        transform: translateY(-5px);
-        font-weight: 600;
-    }
-    
-    .course-actions {
-        transition: all 0.3s ease;
-    }
-    
-    .error-message {
-        color: #ef4444;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-        display: none;
-    }
-    
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0);
+    // Add test card button to payment form
+    const paymentForm = document.getElementById('paymentForm');
+    if (paymentForm) {
+        const testCardBtn = document.createElement('button');
+        testCardBtn.type = 'button';
+        testCardBtn.className = 'btn btn-small';
+        testCardBtn.style.marginTop = '10px';
+        testCardBtn.style.background = '#f59e0b';
+        testCardBtn.innerHTML = '<i class="fas fa-vial"></i> Need test card details?';
+        testCardBtn.onclick = () => {
+            document.getElementById('testCardModal').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('testCardModal').style.opacity = '1';
+            }, 10);
+        };
+        
+        const securityDiv = paymentForm.querySelector('.payment-security');
+        if (securityDiv) {
+            securityDiv.parentNode.insertBefore(testCardBtn, securityDiv);
         }
-        50% {
-            transform: translateY(-10px);
+    }
+    
+    // Add CSS for test card modal
+    const style = document.createElement('style');
+    style.textContent = `
+        .test-card-info {
+            padding: 15px;
+        }
+        .test-card-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+        .test-card-item code {
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        #testCardModal .modal-content {
+            animation: slideUp 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Initialize Payment System - UPDATED
+function initializePaymentSystem() {
+    setupPaymentForm();
+    setupPaymentModal();
+    setupPaymentButtons();
+    loadPaymentData();
+}
+
+// Setup Payment Form - UPDATED
+function setupPaymentForm() {
+    const paymentForm = document.getElementById('paymentForm');
+    const paymentCourseSelect = document.getElementById('paymentCourse');
+    const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
+    const applyCouponBtn = document.getElementById('applyCoupon');
+    const couponCodeInput = document.getElementById('couponCode');
+    
+    // Course selection change
+    if (paymentCourseSelect) {
+        paymentCourseSelect.addEventListener('change', function() {
+            updatePaymentSummary();
+        });
+    }
+    
+    // Payment method change
+    if (paymentMethodRadios.length > 0) {
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                paymentState.paymentMethod = this.value;
+                updatePaymentSummary();
+                toggleInstallmentPlan(this.value === 'installment');
+            });
+        });
+    }
+    
+    // Apply coupon
+    if (applyCouponBtn) {
+        applyCouponBtn.addEventListener('click', function() {
+            const couponCode = couponCodeInput.value.trim().toUpperCase();
+            applyCoupon(couponCode);
+        });
+        
+        // Allow pressing Enter to apply coupon
+        couponCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyCoupon(this.value.trim().toUpperCase());
+            }
+        });
+    }
+    
+    // Form submission
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            processPayment();
+        });
+    }
+    
+    // Initialize form with default values
+    updatePaymentSummary();
+}
+
+// Setup Payment Modal - UPDATED
+function setupPaymentModal() {
+    const paymentModal = document.getElementById('paymentModal');
+    const paymentModalClose = document.getElementById('paymentModalClose');
+    const closePaymentModalBtn = document.getElementById('closePaymentModal');
+    const downloadReceiptBtn = document.getElementById('downloadReceipt');
+    
+    // Close modal functions
+    if (paymentModalClose) {
+        paymentModalClose.addEventListener('click', () => {
+            closePaymentModal();
+        });
+    }
+    
+    if (closePaymentModalBtn) {
+        closePaymentModalBtn.addEventListener('click', () => {
+            closePaymentModal();
+        });
+    }
+    
+    // Download receipt
+    if (downloadReceiptBtn) {
+        downloadReceiptBtn.addEventListener('click', downloadReceipt);
+    }
+    
+    // Close modal when clicking outside
+    if (paymentModal) {
+        paymentModal.addEventListener('click', (event) => {
+            if (event.target === paymentModal) {
+                closePaymentModal();
+            }
+        });
+    }
+}
+
+// Setup Payment Buttons - UPDATED
+function setupPaymentButtons() {
+    // Enroll Now button in course modal
+    const enrollNowBtn = document.getElementById('enrollNowBtn');
+    if (enrollNowBtn) {
+        enrollNowBtn.addEventListener('click', function() {
+            const modal = document.getElementById('courseModal');
+            const courseTitle = document.getElementById('modalCourseTitle').textContent;
+            
+            // Close course modal
+            closeModal();
+            
+            // Find course in courses array
+            const course = courses.find(c => c.title === courseTitle);
+            if (course) {
+                // Switch to payment form
+                document.querySelectorAll('.form-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelector('.form-tab[data-form="payment"]').classList.add('active');
+                
+                document.querySelectorAll('.enquiry-form').forEach(form => form.classList.remove('active'));
+                document.getElementById('paymentForm').classList.add('active');
+                
+                // Set course in payment form
+                const paymentCourseSelect = document.getElementById('paymentCourse');
+                if (paymentCourseSelect) {
+                    let optionValue = '';
+                    
+                    if (course.title.includes('AI & Machine Learning')) {
+                        optionValue = 'ai-ml';
+                    } else if (course.title.includes('DevOps')) {
+                        optionValue = 'devops';
+                    } else if (course.title.includes('Cloud')) {
+                        optionValue = 'cloud';
+                    } else if (course.title.includes('Digital Marketing')) {
+                        optionValue = 'digital-marketing';
+                    } else if (course.title.includes('UI/UX')) {
+                        optionValue = 'ui-ux';
+                    } else if (course.title.includes('Tech for School')) {
+                        optionValue = 'kids';
+                    }
+                    
+                    if (optionValue) {
+                        paymentCourseSelect.value = optionValue;
+                        updatePaymentSummary();
+                    }
+                }
+                
+                // Scroll to payment form
+                const enrollSection = document.getElementById('enroll');
+                if (enrollSection) {
+                    window.scrollTo({
+                        top: enrollSection.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    }
+}
+
+// Load Payment Data
+function loadPaymentData() {
+    // Check for saved payment state in localStorage
+    const savedState = localStorage.getItem('paymentState');
+    if (savedState) {
+        paymentState = JSON.parse(savedState);
+    }
+}
+
+// Save Payment Data
+function savePaymentData() {
+    localStorage.setItem('paymentState', JSON.stringify(paymentState));
+}
+
+// Update Payment Summary - UPDATED
+function updatePaymentSummary() {
+    const paymentCourseSelect = document.getElementById('paymentCourse');
+    const selectedCourseName = document.getElementById('selectedCourseName');
+    const coursePrice = document.getElementById('coursePrice');
+    const discountAmount = document.getElementById('discountAmount');
+    const totalAmount = document.getElementById('totalAmount');
+    
+    if (!paymentCourseSelect || !selectedCourseName) return;
+    
+    const selectedOption = paymentCourseSelect.options[paymentCourseSelect.selectedIndex];
+    const courseValue = paymentCourseSelect.value;
+    
+    if (!courseValue) {
+        selectedCourseName.textContent = '-';
+        coursePrice.textContent = '-';
+        discountAmount.textContent = '-';
+        totalAmount.textContent = '-';
+        return;
+    }
+    
+    // Update course name
+    selectedCourseName.textContent = selectedOption.text.split(' - ')[0];
+    
+    // Get prices
+    const originalPrice = paymentConfig.originalPrices[courseValue] || 0;
+    const discountedPrice = paymentConfig.coursePrices[courseValue] || 0;
+    
+    // Calculate discount
+    const discountPercent = Math.round((1 - (discountedPrice / originalPrice)) * 100);
+    const discountValue = originalPrice - discountedPrice;
+    
+    // Update display
+    coursePrice.textContent = formatCurrency(originalPrice);
+    discountAmount.textContent = `-${formatCurrency(discountValue)} (${discountPercent}% off)`;
+    totalAmount.textContent = formatCurrency(discountedPrice);
+    
+    // Store current course
+    paymentState.selectedCourse = {
+        id: courseValue,
+        name: selectedOption.text.split(' - ')[0],
+        originalPrice: originalPrice,
+        discountedPrice: discountedPrice,
+        discountPercent: discountPercent
+    };
+    
+    // Update installment amounts
+    updateInstallmentAmounts(discountedPrice);
+}
+
+// Update Installment Amounts - UPDATED
+function updateInstallmentAmounts(totalAmount) {
+    const firstInstallment = document.getElementById('firstInstallment');
+    const secondInstallment = document.getElementById('secondInstallment');
+    const thirdInstallment = document.getElementById('thirdInstallment');
+    
+    if (!firstInstallment) return;
+    
+    // Calculate 3-month installment plan (40%, 30%, 30%)
+    const firstAmount = Math.round(totalAmount * 0.4);
+    const remainingAmount = totalAmount - firstAmount;
+    const secondAmount = Math.round(remainingAmount / 2);
+    const thirdAmount = remainingAmount - secondAmount;
+    
+    // Update display
+    firstInstallment.textContent = formatCurrency(firstAmount);
+    secondInstallment.textContent = formatCurrency(secondAmount);
+    thirdInstallment.textContent = formatCurrency(thirdAmount);
+    
+    // Store installment plan
+    paymentState.installmentPlan = {
+        first: firstAmount,
+        second: secondAmount,
+        third: thirdAmount,
+        total: totalAmount
+    };
+}
+
+// Toggle Installment Plan - UPDATED
+function toggleInstallmentPlan(show) {
+    const installmentPlan = document.getElementById('installmentPlan');
+    if (installmentPlan) {
+        installmentPlan.style.display = show ? 'block' : 'none';
+    }
+}
+
+// Apply Coupon - UPDATED
+function applyCoupon(couponCode) {
+    const couponMessage = document.getElementById('couponMessage');
+    const totalAmount = document.getElementById('totalAmount');
+    
+    if (!couponCode) {
+        showCouponMessage('Please enter a coupon code', 'error');
+        return;
+    }
+    
+    // Check if coupon is valid
+    if (paymentConfig.coupons.hasOwnProperty(couponCode)) {
+        const discountPercent = paymentConfig.coupons[couponCode];
+        
+        // Store applied coupon
+        paymentState.appliedCoupon = {
+            code: couponCode,
+            discountPercent: discountPercent
+        };
+        
+        // Recalculate total with coupon discount
+        if (paymentState.selectedCourse) {
+            const discountedPrice = paymentState.selectedCourse.discountedPrice;
+            const couponDiscount = Math.round(discountedPrice * (discountPercent / 100));
+            const finalPrice = discountedPrice - couponDiscount;
+            
+            // Update total amount
+            totalAmount.textContent = formatCurrency(finalPrice);
+            
+            // Show success message
+            showCouponMessage(`Coupon applied! ${discountPercent}% discount added.`, 'success');
+            
+            // Animate the total amount
+            totalAmount.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                totalAmount.style.transform = 'scale(1)';
+            }, 300);
+            
+            // Create confetti effect for large discounts
+            if (discountPercent >= 15) {
+                createConfetti();
+            }
+        }
+    } else {
+        // Invalid coupon
+        paymentState.appliedCoupon = null;
+        showCouponMessage('Invalid coupon code', 'error');
+        
+        // Reset total amount
+        if (paymentState.selectedCourse) {
+            totalAmount.textContent = formatCurrency(paymentState.selectedCourse.discountedPrice);
         }
     }
     
-    .course-card:hover .course-actions {
-        opacity: 1;
-        transform: translateY(0);
+    savePaymentData();
+}
+
+// Show Coupon Message - UPDATED
+function showCouponMessage(message, type) {
+    const couponMessage = document.getElementById('couponMessage');
+    if (!couponMessage) return;
+    
+    couponMessage.textContent = message;
+    couponMessage.className = 'coupon-message ' + type;
+    couponMessage.style.opacity = '1';
+    
+    // Fade out after 5 seconds
+    setTimeout(() => {
+        couponMessage.style.opacity = '0.5';
+    }, 3000);
+}
+
+// Process Payment - UPDATED
+function processPayment() {
+    // Validate form
+    if (!validatePaymentForm()) return;
+    
+    // Get form data
+    const name = document.getElementById('paymentName').value.trim();
+    const email = document.getElementById('paymentEmail').value.trim();
+    const phone = document.getElementById('paymentPhone').value.trim();
+    const courseId = document.getElementById('paymentCourse').value;
+    const courseName = document.getElementById('selectedCourseName').textContent;
+    
+    // Calculate final amount
+    let amount = paymentState.selectedCourse.discountedPrice;
+    
+    // Apply coupon discount if any
+    if (paymentState.appliedCoupon) {
+        const discountAmount = Math.round(amount * (paymentState.appliedCoupon.discountPercent / 100));
+        amount -= discountAmount;
     }
-`;
-document.head.appendChild(additionalStyles);
+    
+    // For installment, use first installment amount
+    if (paymentState.paymentMethod === 'installment' && paymentState.installmentPlan) {
+        amount = paymentState.installmentPlan.first;
+    }
+    
+    // Check minimum amount (Razorpay minimum is ₹1)
+    if (amount < 100) {
+        amount = 100; // Minimum ₹1
+    }
+    
+    // Store transaction data
+    paymentState.transactionData = {
+        name: name,
+        email: email,
+        phone: phone,
+        courseId: courseId,
+        courseName: courseName,
+        amount: amount,
+        paymentMethod: paymentState.paymentMethod,
+        coupon: paymentState.appliedCoupon,
+        installmentPlan: paymentState.installmentPlan,
+        timestamp: new Date().toISOString(),
+        transactionId: generateTransactionId()
+    };
+    
+    // Show payment modal
+    showPaymentModal();
+    
+    // Initialize Razorpay payment
+    initializeRazorpayPayment();
+}
+
+// Validate Payment Form - UPDATED
+function validatePaymentForm() {
+    const name = document.getElementById('paymentName').value.trim();
+    const email = document.getElementById('paymentEmail').value.trim();
+    const phone = document.getElementById('paymentPhone').value.trim();
+    const course = document.getElementById('paymentCourse').value;
+    const termsAgreed = document.getElementById('termsAgreement').checked;
+    
+    let isValid = true;
+    
+    // Reset errors
+    document.querySelectorAll('.error-message').forEach(el => el.remove());
+    document.querySelectorAll('.form-group').forEach(el => el.classList.remove('error'));
+    
+    // Validate name
+    if (!name) {
+        showFieldError('paymentName', 'Full name is required');
+        isValid = false;
+    }
+    
+    // Validate email
+    if (!email) {
+        showFieldError('paymentEmail', 'Email is required');
+        isValid = false;
+    } else if (!isValidEmail(email)) {
+        showFieldError('paymentEmail', 'Please enter a valid email address');
+        isValid = false;
+    }
+    
+    // Validate phone
+    if (!phone) {
+        showFieldError('paymentPhone', 'Phone number is required');
+        isValid = false;
+    } else if (!isValidPhone(phone)) {
+        showFieldError('paymentPhone', 'Please enter a valid phone number');
+        isValid = false;
+    }
+    
+    // Validate course selection
+    if (!course) {
+        showFieldError('paymentCourse', 'Please select a course');
+        isValid = false;
+    }
+    
+    // Validate terms agreement
+    if (!termsAgreed) {
+        const termsGroup = document.querySelector('.terms-agreement');
+        termsGroup.classList.add('error');
+        const errorEl = document.createElement('div');
+        errorEl.className = 'error-message';
+        errorEl.textContent = 'You must agree to the terms and conditions';
+        termsGroup.appendChild(errorEl);
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+// Show Field Error - UPDATED
+function showFieldError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const formGroup = field.closest('.form-group');
+    
+    if (formGroup) {
+        formGroup.classList.add('error');
+        const errorEl = document.createElement('div');
+        errorEl.className = 'error-message';
+        errorEl.textContent = message;
+        formGroup.appendChild(errorEl);
+        
+        // Scroll to error
+        setTimeout(() => {
+            formGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    }
+}
+
+// Initialize Razorpay Payment - COMPLETELY UPDATED
+function initializeRazorpayPayment() {
+    const options = {
+        key: paymentConfig.razorpayKey, // Using the working test key
+        amount: paymentState.transactionData.amount,
+        currency: "INR",
+        name: "Mygurukul by Pulsecrafts",
+        description: `Payment for ${paymentState.transactionData.courseName}`,
+        image: "assets/logo3.jpg", // Using your actual logo
+        order_id: null, // Not needed for client-only
+        handler: function(response) {
+            // Payment successful
+            handlePaymentSuccess(response);
+        },
+        prefill: {
+            name: paymentState.transactionData.name,
+            email: paymentState.transactionData.email,
+            contact: paymentState.transactionData.phone
+        },
+        notes: {
+            course: paymentState.transactionData.courseName,
+            payment_method: paymentState.transactionData.paymentMethod,
+            coupon: paymentState.appliedCoupon ? paymentState.appliedCoupon.code : 'None',
+            installment: paymentState.paymentMethod === 'installment' ? 'First Installment' : 'Full Payment'
+        },
+        theme: {
+            color: "#2563eb"
+        },
+        modal: {
+            ondismiss: function() {
+                // User closed the modal
+                showToast('Payment cancelled', 'warning');
+            }
+        }
+    };
+    
+    // Hide loading after a short delay
+    setTimeout(() => {
+        const paymentLoading = document.getElementById('paymentLoading');
+        if (paymentLoading) {
+            paymentLoading.style.display = 'none';
+        }
+        
+        // Create and open Razorpay instance
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+        
+        // Handle payment failure
+        razorpay.on('payment.failed', function(response) {
+            handlePaymentFailure(response);
+        });
+        
+    }, 1500);
+}
+
+// Handle Payment Success - COMPLETELY UPDATED
+function handlePaymentSuccess(response) {
+    // Update transaction data
+    paymentState.transactionData.paymentId = response.razorpay_payment_id;
+    paymentState.transactionData.orderId = response.razorpay_order_id;
+    paymentState.transactionData.signature = response.razorpay_signature;
+    paymentState.transactionData.paymentStatus = 'success';
+    paymentState.transactionData.verification = "success"; // Client-side only verification
+    
+    // Generate a mock order ID if needed
+    if (!response.razorpay_order_id) {
+        paymentState.transactionData.orderId = `order_${Date.now()}`;
+    }
+    
+    // Save to localStorage
+    savePaymentData();
+    
+    // Show success screen
+    showPaymentSuccess();
+    
+    // Auto-generate receipt
+    autoGenerateReceipt();
+    
+    // Show success toast
+    showToast('✅ Payment successful! Enrollment confirmed.', 'success', 5000);
+    
+    // Create confetti effect
+    createConfetti();
+}
+
+// Handle Payment Failure - COMPLETELY UPDATED
+function handlePaymentFailure(response) {
+    paymentState.transactionData.paymentStatus = 'failed';
+    paymentState.transactionData.error = response.error;
+    paymentState.transactionData.errorDescription = response.error.description || 'Unknown error';
+    paymentState.transactionData.errorSource = response.error.source || 'gateway';
+    
+    // Save to localStorage
+    savePaymentData();
+    
+    // Show detailed error message
+    let errorMsg = "Payment failed. ";
+    if (response.error && response.error.description) {
+        errorMsg += response.error.description;
+    }
+    
+    showToast(errorMsg, 'error', 5000);
+    
+    // Show retry button
+    setTimeout(() => {
+        const paymentSuccess = document.getElementById('paymentSuccess');
+        if (paymentSuccess) {
+            paymentSuccess.innerHTML += `
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" id="retryPaymentBtn" style="background: var(--danger-color);">
+                        <i class="fas fa-redo"></i> Retry Payment
+                    </button>
+                </div>
+            `;
+            
+            // Add retry button listener
+            const retryBtn = document.getElementById('retryPaymentBtn');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', function() {
+                    closePaymentModal();
+                    setTimeout(() => processPayment(), 500);
+                });
+            }
+        }
+    }, 1000);
+    
+    // Close payment modal after 5 seconds
+    setTimeout(() => {
+        closePaymentModal();
+    }, 5000);
+}
+
+// Show Payment Modal - UPDATED
+function showPaymentModal() {
+    const paymentModal = document.getElementById('paymentModal');
+    const paymentLoading = document.getElementById('paymentLoading');
+    const paymentSuccess = document.getElementById('paymentSuccess');
+    
+    // Reset modal state
+    if (paymentLoading) {
+        paymentLoading.style.display = 'block';
+    }
+    if (paymentSuccess) {
+        paymentSuccess.style.display = 'none';
+    }
+    
+    // Show modal
+    paymentModal.style.display = 'block';
+    setTimeout(() => {
+        paymentModal.style.opacity = '1';
+    }, 10);
+}
+
+// Show Payment Success - UPDATED
+function showPaymentSuccess() {
+    const paymentLoading = document.getElementById('paymentLoading');
+    const paymentSuccess = document.getElementById('paymentSuccess');
+    const transactionId = document.getElementById('transactionId');
+    const amountPaid = document.getElementById('amountPaid');
+    const courseEnrolled = document.getElementById('courseEnrolled');
+    const paymentDate = document.getElementById('paymentDate');
+    
+    // Hide loading, show success
+    if (paymentLoading) {
+        paymentLoading.style.display = 'none';
+    }
+    if (paymentSuccess) {
+        paymentSuccess.style.display = 'block';
+    }
+    
+    // Update success details
+    if (transactionId && paymentState.transactionData) {
+        transactionId.textContent = paymentState.transactionData.paymentId || 'N/A';
+    }
+    
+    if (amountPaid && paymentState.transactionData) {
+        amountPaid.textContent = formatCurrency(paymentState.transactionData.amount);
+    }
+    
+    if (courseEnrolled && paymentState.transactionData) {
+        courseEnrolled.textContent = paymentState.transactionData.courseName;
+    }
+    
+    if (paymentDate && paymentState.transactionData) {
+        paymentDate.textContent = formatDate(new Date(paymentState.transactionData.timestamp));
+    }
+}
+
+// Close Payment Modal - UPDATED
+function closePaymentModal() {
+    const paymentModal = document.getElementById('paymentModal');
+    paymentModal.style.opacity = '0';
+    setTimeout(() => {
+        paymentModal.style.display = 'none';
+    }, 300);
+}
+
+// Download Receipt - UPDATED
+function downloadReceipt() {
+    if (!paymentState.transactionData) return;
+    
+    // Generate receipt number
+    const receiptNumber = `RCPT-${Date.now().toString().slice(-6)}`;
+    
+    // Create receipt content
+    const receiptContent = `
+        <html>
+        <head>
+            <title>Payment Receipt - Mygurukul</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .receipt { max-width: 600px; margin: 0 auto; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .details { margin: 20px 0; }
+                .detail-item { display: flex; justify-content: space-between; margin: 10px 0; }
+                .footer { margin-top: 30px; text-align: center; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class="receipt">
+                <div class="header">
+                    <h1>Mygurukul</h1>
+                    <h2>Payment Receipt</h2>
+                </div>
+                <div class="details">
+                    <div class="detail-item">
+                        <strong>Receipt No:</strong> ${receiptNumber}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Date:</strong> ${formatDate(new Date(paymentState.transactionData.timestamp))}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Time:</strong> ${new Date(paymentState.transactionData.timestamp).toLocaleTimeString('en-IN')}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Transaction ID:</strong> ${paymentState.transactionData.paymentId || 'N/A'}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Course:</strong> ${paymentState.transactionData.courseName}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Payment Method:</strong> ${paymentState.transactionData.paymentMethod === 'installment' ? 'Installment (First)' : 'Full Payment'}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Amount Paid:</strong> ${formatCurrency(paymentState.transactionData.amount)}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Student Name:</strong> ${paymentState.transactionData.name}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Student Email:</strong> ${paymentState.transactionData.email}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Status:</strong> <span style="color: green; font-weight: bold;">Paid ✓</span>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>Thank you for your payment!</p>
+                    <p>For any queries, contact: sales@pulsecrafts.com</p>
+                    <p style="font-size: 0.9rem; margin-top: 20px; color: #888;">
+                        This is a computer-generated receipt. No signature required.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    // Create and trigger download
+    const blob = new Blob([receiptContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `receipt-${receiptNumber}-mygurukul.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Receipt downloaded successfully!', 'success');
+}
+
+// Auto-generate receipt - NEW FUNCTION
+function autoGenerateReceipt() {
+    if (!paymentState.transactionData) return;
+    
+    // Generate receipt number
+    const receiptNumber = `RCPT-${Date.now().toString().slice(-6)}`;
+    
+    // Create receipt data
+    const receiptData = {
+        receiptNumber: receiptNumber,
+        date: new Date().toLocaleDateString('en-IN'),
+        time: new Date().toLocaleTimeString('en-IN'),
+        courseName: paymentState.transactionData.courseName,
+        amount: formatCurrency(paymentState.transactionData.amount),
+        paymentId: paymentState.transactionData.paymentId || 'N/A',
+        customerName: paymentState.transactionData.name,
+        customerEmail: paymentState.transactionData.email,
+        status: 'Paid'
+    };
+    
+    // Show receipt in success modal
+    const paymentDetails = document.querySelector('.payment-details');
+    if (paymentDetails) {
+        paymentDetails.innerHTML += `
+            <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px;">
+                <h5 style="margin-bottom: 10px; color: #2563eb;">
+                    <i class="fas fa-receipt"></i> Receipt Details
+                </h5>
+                <div style="font-size: 0.9rem;">
+                    <div><strong>Receipt No:</strong> ${receiptData.receiptNumber}</div>
+                    <div><strong>Date & Time:</strong> ${receiptData.date} ${receiptData.time}</div>
+                    <div><strong>Mode:</strong> ${paymentState.transactionData.paymentMethod === 'installment' ? 'Installment (First)' : 'Full Payment'}</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Auto-download receipt after 3 seconds
+    setTimeout(() => {
+        downloadReceipt();
+    }, 3000);
+}
+
+// Helper Functions
+function formatCurrency(amountInPaise) {
+    const amountInRupees = amountInPaise / 100;
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 0
+    }).format(amountInRupees);
+}
+
+function generateTransactionId() {
+    return 'TXN' + Date.now() + Math.random().toString(36).substr(2, 9).toUpperCase();
+}

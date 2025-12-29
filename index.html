@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Razorpay Integration -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
     <!-- Header & Navigation -->
@@ -17,8 +19,7 @@
         <div class="container">
             <nav class="navbar">
                 <a href="index.html" class="logo">
-                    <span>MY Gurukulam </span>
-                    <span class="logo-text"><img src="assets/logo1.png" alt="pulsecrafts" class="logo-img"></span>
+                    <img src="assets/logo3.jpg" alt="MyGuruKul by Pulsecrafts" class="logo-img">
                 </a>
                 <ul class="nav-menu">
                     <li><a href="#home" class="nav-link active">Home</a></li>
@@ -63,7 +64,7 @@
     <section class="highlights">
         <div class="container">
             <div class="section-header">
-                <h2>Why Choose Pulsecrafts?</h2>
+                <h2>Why Choose Mygurukul?</h2>
                 <p>We provide a comprehensive learning ecosystem to ensure your success</p>
             </div>
             <div class="highlight-cards">
@@ -299,10 +300,10 @@
     <!-- About Section -->
     <section class="about-section" id="about">
         <div class="container">
-            <h2 class="section-title">About Pulsecrafts</h2>
+            <h2 class="section-title">About Mygurukul</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Pulsecrafts is a leading provider of career-oriented training programs designed to bridge the gap between academic learning and industry requirements.</p>
+                    <p>Mygurukul is a leading provider of career-oriented training programs designed to bridge the gap between academic learning and industry requirements.</p>
                     <p>Our mission is to empower students and professionals with the skills needed to succeed in today's competitive job market through structured training and placement support.</p>
                     <div class="about-features">
                         <div class="feature">
@@ -357,6 +358,7 @@
                         <button class="form-tab active" data-form="student">Student Enquiry</button>
                         <button class="form-tab" data-form="counsellor">Counsellor Partnership</button>
                         <button class="form-tab" data-form="demo">Demo Session</button>
+                        <button class="form-tab" data-form="payment">Make Payment</button>
                     </div>
                     
                     <!-- Student Enquiry Form -->
@@ -467,6 +469,106 @@
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">Book Demo Session</button>
                     </form>
+
+                    <!-- Payment Form -->
+                    <form id="paymentForm" class="enquiry-form">
+                        <h3>Course Payment</h3>
+                        <div class="payment-info">
+                            <div class="payment-summary">
+                                <h4>Payment Summary</h4>
+                                <div class="summary-item">
+                                    <span>Course Selected:</span>
+                                    <strong id="selectedCourseName">-</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Course Price:</span>
+                                    <span id="coursePrice">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Discount Applied:</span>
+                                    <span id="discountAmount" class="discount">-</span>
+                                </div>
+                                <div class="summary-item total">
+                                    <span>Total Amount:</span>
+                                    <strong id="totalAmount">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="paymentName">Full Name *</label>
+                            <input type="text" id="paymentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentEmail">Email Address *</label>
+                            <input type="email" id="paymentEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentPhone">Phone Number *</label>
+                            <input type="tel" id="paymentPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentCourse">Select Course *</label>
+                            <select id="paymentCourse" required>
+                                <option value="">Select a course</option>
+                                <option value="ai-ml" data-price="59999" data-original="75999">AI & Machine Learning - ₹59,999</option>
+                                <option value="devops" data-price="39990" data-original="59990">DevOps Architect Program - ₹39,990</option>
+                                <option value="cloud" data-price="29990" data-original="44990">Cloud Architect Program - ₹29,990</option>
+                                <option value="digital-marketing" data-price="999" data-original="9999">Digital Marketing Mastery - ₹999</option>
+                                <option value="ui-ux" data-price="999" data-original="9999">UI/UX Design Pro - ₹999</option>
+                                <option value="kids" data-price="9999" data-original="10999">Tech for School Kids - ₹9,999</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <div class="payment-methods">
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="full" checked>
+                                    <span>Full Payment</span>
+                                </label>
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="installment">
+                                    <span>Installment (3 Months)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="installment-plan" id="installmentPlan" style="display: none;">
+                            <h4>Installment Plan</h4>
+                            <div class="installment-item">
+                                <span>First Installment (Today):</span>
+                                <span id="firstInstallment">-</span>
+                            </div>
+                            <div class="installment-item">
+                                <span>Second Installment (Month 2):</span>
+                                <span id="secondInstallment">-</span>
+                            </div>
+                            <div class="installment-item">
+                                <span>Third Installment (Month 3):</span>
+                                <span id="thirdInstallment">-</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="couponCode">Coupon Code (Optional)</label>
+                            <div class="coupon-input">
+                                <input type="text" id="couponCode" placeholder="Enter coupon code">
+                                <button type="button" class="btn btn-small" id="applyCoupon">Apply</button>
+                            </div>
+                            <div id="couponMessage" class="coupon-message"></div>
+                        </div>
+                        <div class="form-group terms-agreement">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="termsAgreement" required>
+                                <span>I agree to the <a href="#" class="terms-link">Terms & Conditions</a> and <a href="#" class="terms-link">Refund Policy</a></span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" id="proceedPayment">
+                            <i class="fas fa-lock"></i> Proceed to Payment
+                        </button>
+                        <div class="payment-security">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure payment processed by Razorpay</span>
+                        </div>
+                    </form>
                 </div>
                 
                 <div class="contact-info">
@@ -503,6 +605,17 @@
                             </a>
                         </div>
                     </div>
+                    <div class="payment-methods-info">
+                        <h4>Accepted Payment Methods</h4>
+                        <div class="payment-icons">
+                            <i class="fab fa-cc-visa"></i>
+                            <i class="fab fa-cc-mastercard"></i>
+                            <i class="fab fa-cc-amex"></i>
+                            <i class="fab fa-cc-paypal"></i>
+                            <i class="fas fa-university"></i>
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -514,7 +627,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <a href="index.html" class="logo">
-                        <span class="logo-text"><img src="assets/logo1.png" alt="pulsecrafts" class="logo-img"></span>
+                     <!----   <img src="assets/logo3.jpg" alt="MyGuruKul by Pulsecrafts" class="logo-img footer-logo">-->
                     </a>
                     <p>Online training & placement platform offering career-oriented courses with structured placement support.</p>
                     <div class="social-links">
@@ -554,7 +667,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 Mygurukul by Pulsecrafts. All rights reserved.</p>
+                <p>&copy; 2023 Mygurukul . All rights reserved.</p>
                 <div class="footer-links">
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
@@ -611,8 +724,48 @@
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <a href="#enroll" class="btn btn-primary">Enroll Now</a>
+                    <button class="btn btn-primary" id="enrollNowBtn">
+                        <i class="fas fa-shopping-cart"></i> Enroll Now
+                    </button>
                     <button class="btn btn-outline" id="closeModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <button class="modal-close" id="paymentModalClose">&times;</button>
+            <div class="modal-header">
+                <h2>Complete Your Payment</h2>
+                <p>Secure payment via Razorpay</p>
+            </div>
+            <div class="modal-body">
+                <div class="payment-loading" id="paymentLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading payment gateway...</p>
+                </div>
+                <div class="payment-success" id="paymentSuccess" style="display: none;">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Payment Successful!</h3>
+                    <p>Thank you for your payment. Your enrollment has been confirmed.</p>
+                    <div class="payment-details">
+                        <p><strong>Transaction ID:</strong> <span id="transactionId">-</span></p>
+                        <p><strong>Amount Paid:</strong> <span id="amountPaid">-</span></p>
+                        <p><strong>Course:</strong> <span id="courseEnrolled">-</span></p>
+                        <p><strong>Date:</strong> <span id="paymentDate">-</span></p>
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn btn-primary" id="downloadReceipt">
+                            <i class="fas fa-download"></i> Download Receipt
+                        </button>
+                        <button class="btn btn-outline" id="closePaymentModal">
+                            Close
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
