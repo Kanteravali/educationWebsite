@@ -122,6 +122,86 @@ const courses = [
     },
     {
         id: 4,
+        title: "Blockchain & Crypto Mastery",
+        subtitle: "Comprehensive Blockchain Development & Cryptocurrency Fundamentals",
+        category: "technical",
+        duration: "4 Months",
+        originalPrice: "₹49,999",
+        discountedPrice: "₹34,999",
+        discount: "30%",
+        description: "Master blockchain technology, smart contracts, and cryptocurrency fundamentals. Learn Solidity, Web3.js, and build decentralized applications (dApps) from scratch.",
+        curriculum: [
+            "Blockchain Fundamentals & Cryptography",
+            "Smart Contract Development with Solidity",
+            "Ethereum, Polygon & Layer 2 Solutions",
+            "dApp Development with Web3.js & Ethers.js",
+            "DeFi Protocols & NFT Marketplace Development",
+            "Security Auditing & Real-World Blockchain Projects"
+        ],
+        projects: [
+            "Complete NFT marketplace with minting functionality",
+            "Decentralized exchange (DEX) implementation",
+            "Smart contract security audit project",
+            "Custom blockchain token creation and deployment"
+        ],
+        certification: "Blockchain Developer Certification with project portfolio",
+        placement: "Blockchain developer and Web3 role placement support",
+        hasCertificateImage: true,
+        certificateTitle: "Blockchain Developer Certificate",
+        certificateSubtitle: "Building Decentralized Future with Blockchain Technology",
+        certificateColor: "#8B5CF6",
+        certificateAccent: "#7C3AED",
+        certificateIcon: "fas fa-link",
+        certificateNumber: "BLOCKCHAIN-CERT-2024",
+        certificateFeatures: [
+            "Industry-recognized blockchain certification",
+            "Smart contract development portfolio",
+            "Web3 development expertise",
+            "Global verification system"
+        ]
+    },
+    {
+        id: 5,
+        title: "Cloud DevOps Engineer",
+        subtitle: "Master Cloud Infrastructure with DevOps Practices",
+        category: "technical",
+        duration: "5 Months",
+        originalPrice: "₹54,999",
+        discountedPrice: "₹39,999",
+        discount: "27%",
+        description: "Become a Cloud DevOps Engineer with expertise in AWS/Azure/GCP infrastructure, CI/CD pipelines, container orchestration, and infrastructure as code (IaC).",
+        curriculum: [
+            "Cloud Computing Fundamentals (AWS/Azure/GCP)",
+            "Infrastructure as Code with Terraform & CloudFormation",
+            "Container Orchestration with Kubernetes",
+            "CI/CD Pipeline Automation",
+            "Monitoring, Logging & Cloud Security",
+            "Serverless Architecture & Cloud Optimization"
+        ],
+        projects: [
+            "Multi-cloud infrastructure automation",
+            "End-to-end CI/CD pipeline with GitOps",
+            "Kubernetes cluster setup with autoscaling",
+            "Serverless application deployment project"
+        ],
+        certification: "Cloud DevOps Engineer Certification",
+        placement: "Cloud DevOps and Site Reliability Engineer role assistance",
+        hasCertificateImage: true,
+        certificateTitle: "Cloud DevOps Engineer Certificate",
+        certificateSubtitle: "Mastering Cloud Infrastructure and DevOps Automation",
+        certificateColor: "#0891b2",
+        certificateAccent: "#0e7490",
+        certificateIcon: "fas fa-cloud-upload-alt",
+        certificateNumber: "CLOUD-DEVOPS-CERT-2024",
+        certificateFeatures: [
+            "Dual certification in Cloud & DevOps",
+            "Multi-cloud project experience",
+            "Infrastructure as Code expertise",
+            "Industry best practices"
+        ]
+    },
+    {
+        id: 6,
         title: "Digital Marketing Mastery",
         subtitle: "1-Month Intensive Digital Marketing Bootcamp",
         category: "technical",
@@ -161,7 +241,7 @@ const courses = [
         ]
     },
     {
-        id: 5,
+        id: 7,
         title: "UI/UX Design Pro",
         subtitle: "1-Month UI/UX Design Intensive Program",
         category: "technical",
@@ -201,7 +281,7 @@ const courses = [
         ]
     },
     {
-        id: 6,
+        id: 8,
         title: "Tech for School Kids",
         subtitle: "Learn, Build, Create – Tech Simplified for Young Minds",
         category: "kids",
@@ -253,7 +333,9 @@ const paymentConfig = {
         "FIRSTBUY15": 15,
         "STUDENT20": 20,
         "SUMMER25": 25,
-        "SPECIAL999": 90 // Special coupon for ₹999 courses
+        "SPECIAL999": 90, // Special coupon for ₹999 courses
+        "BLOCKCHAIN30": 30, // Special for blockchain course
+        "CLOUDDEVOPS25": 25 // Special for cloud devops course
     },
     
     // Course price mapping (in paise for Razorpay)
@@ -261,6 +343,8 @@ const paymentConfig = {
         "ai-ml": 59999 * 100,
         "devops": 39990 * 100,
         "cloud": 29990 * 100,
+        "blockchain": 34999 * 100,
+        "cloud-devops": 39999 * 100,
         "digital-marketing": 999 * 100,
         "ui-ux": 999 * 100,
         "kids": 9999 * 100
@@ -271,6 +355,8 @@ const paymentConfig = {
         "ai-ml": 75999 * 100,
         "devops": 59990 * 100,
         "cloud": 44990 * 100,
+        "blockchain": 49999 * 100,
+        "cloud-devops": 54999 * 100,
         "digital-marketing": 9999 * 100,
         "ui-ux": 9999 * 100,
         "kids": 10999 * 100
@@ -367,8 +453,13 @@ function populateCourses() {
         const specialOfferBadge = (course.discountedPrice === "₹999") ? 
             `<div class="special-offer-badge">SPECIAL OFFER</div>` : '';
         
+        // Add trending badge for blockchain and cloud devops
+        const trendingBadge = (course.title.includes("Blockchain") || course.title.includes("Cloud DevOps")) ? 
+            `<div class="trending-badge">🔥 TRENDING</div>` : '';
+        
         courseCard.innerHTML = `
             ${specialOfferBadge}
+            ${trendingBadge}
             <div class="course-header">
                 <span class="course-category">${course.category === 'kids' ? 'For Kids' : 'Technical'}</span>
                 <span class="course-duration">${course.duration}</span>
@@ -434,10 +525,14 @@ function populateCourses() {
                 
                 if (courseTitle.includes('AI & Machine Learning')) {
                     optionValue = 'ai-ml';
-                } else if (courseTitle.includes('DevOps')) {
+                } else if (courseTitle.includes('DevOps') && !courseTitle.includes('Cloud DevOps')) {
                     optionValue = 'devops';
-                } else if (courseTitle.includes('Cloud')) {
+                } else if (courseTitle.includes('Cloud') && !courseTitle.includes('DevOps')) {
                     optionValue = 'cloud';
+                } else if (courseTitle.includes('Blockchain')) {
+                    optionValue = 'blockchain';
+                } else if (courseTitle.includes('Cloud DevOps')) {
+                    optionValue = 'cloud-devops';
                 } else if (courseTitle.includes('Digital Marketing')) {
                     optionValue = 'digital-marketing';
                 } else if (courseTitle.includes('UI/UX')) {
@@ -455,6 +550,20 @@ function populateCourses() {
                         setTimeout(() => {
                             applyCoupon('SPECIAL999');
                             showToast('Special coupon applied automatically!', 'success');
+                        }, 500);
+                    }
+                    // Auto-apply special coupon for blockchain
+                    else if (optionValue === 'blockchain') {
+                        setTimeout(() => {
+                            applyCoupon('BLOCKCHAIN30');
+                            showToast('Special 30% discount applied for Blockchain course!', 'success');
+                        }, 500);
+                    }
+                    // Auto-apply special coupon for cloud devops
+                    else if (optionValue === 'cloud-devops') {
+                        setTimeout(() => {
+                            applyCoupon('CLOUDDEVOPS25');
+                            showToast('Special 25% discount applied for Cloud DevOps course!', 'success');
                         }, 500);
                     }
                 }
@@ -786,6 +895,11 @@ function showCourseModal(course) {
         modalOverview.textContent += `\n\n🎯 **Special Limited Time Offer**: Get this complete ${course.duration} course for just ₹999! Regular price ${course.originalPrice}. Offer ends soon!`;
     }
     
+    // Add trending note for blockchain and cloud devops
+    if (course.title.includes("Blockchain") || course.title.includes("Cloud DevOps")) {
+        modalOverview.textContent += `\n\n🔥 **Trending Technology**: This course focuses on high-demand skills with excellent career prospects in 2024-2025.`;
+    }
+    
     // Update curriculum
     modalCurriculum.innerHTML = course.curriculum.map(item => 
         `<div class="curriculum-item"><i class="fas fa-check"></i> ${item}</div>`
@@ -827,6 +941,10 @@ function generateCertificateHTML(course) {
     let communityDesc = "Connect with industry experts, alumni, and fellow professionals.";
     if (course.category === 'kids') {
         communityDesc = "Join our young innovators community and connect with peers and mentors.";
+    } else if (course.title.includes("Blockchain")) {
+        communityDesc = "Join our Web3 community and connect with blockchain developers, crypto experts, and industry leaders.";
+    } else if (course.title.includes("Cloud DevOps")) {
+        communityDesc = "Join our Cloud & DevOps community and connect with infrastructure experts and SRE professionals.";
     }
     
     // Add special offer note for ₹999 courses
@@ -1245,6 +1363,24 @@ function addCertificateStyles() {
             animation: pulse 2s infinite;
         }
         
+        /* Trending Badge */
+        .trending-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
         /* Certificate seal animation */
         .certificate-seal {
             animation: sealGlow 2s infinite;
@@ -1289,7 +1425,8 @@ function addCertificateStyles() {
                 padding: 1rem;
             }
             
-            .special-offer-badge {
+            .special-offer-badge,
+            .trending-badge {
                 font-size: 0.7rem;
                 padding: 4px 10px;
             }
@@ -1809,10 +1946,14 @@ function setupPaymentButtons() {
                     
                     if (course.title.includes('AI & Machine Learning')) {
                         optionValue = 'ai-ml';
-                    } else if (course.title.includes('DevOps')) {
+                    } else if (course.title.includes('DevOps') && !course.title.includes('Cloud DevOps')) {
                         optionValue = 'devops';
-                    } else if (course.title.includes('Cloud')) {
+                    } else if (course.title.includes('Cloud') && !course.title.includes('DevOps')) {
                         optionValue = 'cloud';
+                    } else if (course.title.includes('Blockchain')) {
+                        optionValue = 'blockchain';
+                    } else if (course.title.includes('Cloud DevOps')) {
+                        optionValue = 'cloud-devops';
                     } else if (course.title.includes('Digital Marketing')) {
                         optionValue = 'digital-marketing';
                     } else if (course.title.includes('UI/UX')) {
@@ -1824,6 +1965,20 @@ function setupPaymentButtons() {
                     if (optionValue) {
                         paymentCourseSelect.value = optionValue;
                         updatePaymentSummary();
+                        
+                        // Auto-apply special coupons
+                        setTimeout(() => {
+                            if (optionValue === 'digital-marketing' || optionValue === 'ui-ux') {
+                                applyCoupon('SPECIAL999');
+                                showToast('Special coupon applied automatically!', 'success');
+                            } else if (optionValue === 'blockchain') {
+                                applyCoupon('BLOCKCHAIN30');
+                                showToast('Special 30% discount applied for Blockchain course!', 'success');
+                            } else if (optionValue === 'cloud-devops') {
+                                applyCoupon('CLOUDDEVOPS25');
+                                showToast('Special 25% discount applied for Cloud DevOps course!', 'success');
+                            }
+                        }, 500);
                     }
                 }
                 
